@@ -1,10 +1,13 @@
 // boids.js
-let separationCoef = .005;
+let separationCoef = .0025;
 let alignmentCoef = .0025;
-let cohesionCoef = .0005;
+let cohesionCoef = .00025;
+
+let seperationRad = 50;
+let cohesionRad = 125;
+let alignmentRad = 125;
+
 export class Boid {
-
-
     constructor(inputx, inputy) {
         this.pos = {
             x: inputx,
@@ -15,22 +18,21 @@ export class Boid {
             y: Math.random() * (2 + 2) - 2
         };
         this.angleRad = Math.atan2(this.vel.y, this.vel.x);
-        this.maxVel = 4;
-        this.minVel = -4;
+        this.maxSpeed = 3;
+    }
+
+    getDist(x, y) {
+        return (Math.sqrt(x * x + y * y));
     }
 
     update() {
-        if (this.vel.x >= this.maxVel) {
-            this.vel.x = this.maxVel;
+        if (this.getDist(this.vel.x, this.vel.y) >= this.maxSpeed) {
+            this.vel.x = this.maxSpeed * Math.cos(this.angleRad);
+            this.vel.y = this.maxSpeed * Math.sin(this.angleRad);
         }
-        if (this.vel.x <= this.minVel) {
-            this.vel.x = this.minVel;
-        }
-        if (this.vel.y >= this.maxVel) {
-            this.vel.y = this.maxVel;
-        }
-        if (this.vel.y <= this.minVel) {
-            this.vel.y = this.minVel;
+        else if (this.getDist(this.vel.x, this.vel.y) <= -this.maxSpeed) {
+            this.vel.x = -this.maxSpeed * Math.cos(this.angleRad);
+            this.vel.y = -this.maxSpeed * Math.sin(this.angleRad);
         }
         this.pos.x += this.vel.x;
         this.pos.y += this.vel.y;
@@ -40,9 +42,13 @@ export class Boid {
     separation(boids) {
         for (let i = 0; i < boids.length; i++) {
             for (let j = i + 1; j < boids.length; j++) {
-                let distance = Math.sqrt((boids[j].pos.x - boids[i].pos.x)**2 + (boids[j].pos.y - boids[i].pos.y)**2);
-                if (distance < 50) {
-                    let angle = Math.atan2(boids[j].pos.y - boids[i].pos.y, boids[j].pos.x - boids[i].pos.x);
+                let distComp = {
+                    x: boids[j].pos.x - boids[i].pos.x,
+                    y: boids[j].pos.y - boids[i].pos.y
+                };
+                let distance = this.getDist(distComp.x, distComp.y);
+                if (distance < seperationRad) {
+                    let angle = Math.atan2(distComp.y, distComp.x);
                     boids[i].vel.x -= Math.cos(angle) * separationCoef;
                     boids[i].vel.y -= Math.sin(angle) * separationCoef;
                     boids[j].vel.x += Math.cos(angle) * separationCoef;
@@ -61,8 +67,8 @@ export class Boid {
                     continue;
                 }
                 else {
-                    let distance = Math.sqrt((boids[j].pos.x - boids[i].pos.x)**2 + (boids[j].pos.y - boids[i].pos.y)**2);
-                    if (distance < 100) {
+                    let distance = this.getDist(boids[j].pos.x - boids[i].pos.x, boids[j].pos.y - boids[i].pos.y);
+                    if (distance < alignmentRad) {
                         totalAngle += boids[j].angleRad;
                         numBoids += 1;
                     }
@@ -93,7 +99,7 @@ export class Boid {
         }
     }
 
-    cohesion(ctx, boids) {
+    cohesion(boids) {
         for (let i = 0; i < boids.length; i++) {
             let totalx = 0;
             let totaly = 0;
@@ -103,8 +109,8 @@ export class Boid {
                     continue;
                 }
                 else {
-                    let distance = Math.sqrt((boids[j].pos.x - boids[i].pos.x)**2 + (boids[j].pos.y - boids[i].pos.y)**2);
-                    if (distance < 100) {
+                    let distance = this.getDist(boids[j].pos.x - boids[i].pos.x, boids[j].pos.y - boids[i].pos.y);
+                    if (distance < cohesionRad) {
                         totalx += boids[j].pos.x;
                         totaly += boids[j].pos.y;
                         numBoids += 1;
@@ -114,7 +120,6 @@ export class Boid {
             if (numBoids > 0) {
                 let avgx = totalx / numBoids;
                 let avgy = totaly / numBoids;
-                console.log(avgx, avgy);
                 boids[i].vel.x += cohesionCoef * (avgx - boids[i].pos.x);
                 boids[i].vel.y += cohesionCoef * (avgy - boids[i].pos.y);
             }

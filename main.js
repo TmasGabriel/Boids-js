@@ -17,7 +17,7 @@ function animate() {
     boids.forEach((boid, index) => {
         boid.separation(boids);
         boid.alignment(boids);
-        boid.cohesion(ctx, boids);
+        boid.cohesion(boids);
         boid.sneaky(boids);
         boid.update();
         drawBoid(ctx, boid);
