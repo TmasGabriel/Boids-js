@@ -7,6 +7,9 @@ let seperationRad = 40;
 let cohesionRad = 100;
 let alignmentRad = 160;
 
+let wallMargin = 50;
+let bounceCoef = .5;
+
 export class Boid {
     constructor(inputx, inputy) {
         this.pos = {
@@ -155,4 +158,20 @@ export class Boid {
             this.vel.y = - Math.abs(this.vel.y) * damping;
         }
     }
+
+    BounceOffWall(width, height) {
+        if (this.pos.x >= width - wallMargin) {
+            this.vel.x -= bounceCoef;
+        }
+        else if (this.pos.x <= 0 + wallMargin) {
+            this.vel.x += bounceCoef;
+        }
+        if (this.pos.y >= height - wallMargin) {
+            this.vel.y -= bounceCoef;
+        }
+        else if (this.pos.y <= 0 + wallMargin) {
+            this.vel.y += bounceCoef;
+        }
+    }
+
 }

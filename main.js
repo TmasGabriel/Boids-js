@@ -18,9 +18,9 @@ function animate() {
         boid.separation(boids);
         boid.alignment(boids);
         boid.cohesion(boids);
-        boid.sneaky(canvas.width, canvas.height);
+        //boid.sneaky(canvas.width, canvas.height);
         boid.update();
-        //boid.keepInBounds(canvas.width, canvas.height);
+        boid.BounceOffWall(canvas.width, canvas.height);
         drawBoid(ctx, boid);
         drawDir(ctx, boid);
     });
