@@ -22,7 +22,7 @@ function animate() {
     //console.log('Animating frame');
     clearCanvas(ctx, canvas);
     boids.forEach((boid, index) => {
-        //console.log(`Updating boid ${index}: x=${boid.pos.x}, y=${boid.pos.y}`);
+        boid.separation(boids);
         boid.update();
         drawBoid(ctx, boid);
         drawDir(ctx, boid);
