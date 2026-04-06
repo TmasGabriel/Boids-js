@@ -1,11 +1,11 @@
 // boids.js
-let separationCoef = .0025;
-let alignmentCoef = .0025;
-let cohesionCoef = .00025;
+let separationCoef = .04;
+let alignmentCoef = .02;
+let cohesionCoef = .005;
 
-let seperationRad = 50;
-let cohesionRad = 125;
-let alignmentRad = 125;
+let seperationRad = 40;
+let cohesionRad = 100;
+let alignmentRad = 160;
 
 export class Boid {
     constructor(inputx, inputy) {
@@ -18,7 +18,7 @@ export class Boid {
             y: Math.random() * (2 + 2) - 2
         };
         this.angleRad = Math.atan2(this.vel.y, this.vel.x);
-        this.maxSpeed = 3;
+        this.maxSpeed = 5;
     }
 
     getDist(x, y) {
@@ -40,93 +40,119 @@ export class Boid {
     }
 
     separation(boids) {
-        for (let i = 0; i < boids.length; i++) {
-            for (let j = i + 1; j < boids.length; j++) {
-                let distComp = {
-                    x: boids[j].pos.x - boids[i].pos.x,
-                    y: boids[j].pos.y - boids[i].pos.y
-                };
-                let distance = this.getDist(distComp.x, distComp.y);
-                if (distance < seperationRad) {
-                    let angle = Math.atan2(distComp.y, distComp.x);
-                    boids[i].vel.x -= Math.cos(angle) * separationCoef;
-                    boids[i].vel.y -= Math.sin(angle) * separationCoef;
-                    boids[j].vel.x += Math.cos(angle) * separationCoef;
-                    boids[j].vel.y += Math.sin(angle) * separationCoef;
-                }
+        for (let otherBoid of boids) {
+            if (otherBoid === this) continue;
+            let distComp = {
+                x: otherBoid.pos.x - this.pos.x,
+                y: otherBoid.pos.y - this.pos.y
+            };
+            let distance = this.getDist(distComp.x, distComp.y);
+            if (distance < seperationRad) {
+                let angle = Math.atan2(distComp.y, distComp.x);
+                this.vel.x -= Math.cos(angle) * separationCoef;
+                this.vel.y -= Math.sin(angle) * separationCoef;
+                otherBoid.vel.x += Math.cos(angle) * separationCoef;
+                otherBoid.vel.y += Math.sin(angle) * separationCoef;
             }
         }
     }
 
     alignment(boids) {
-        for (let i = 0; i < boids.length; i++) {
-            let totalAngle = 0;
-            let numBoids = 0;
-            for (let j = 0; j < boids.length; j++) {
-                if (boids[i] === boids[j]) {
-                    continue;
-                }
-                else {
-                    let distance = this.getDist(boids[j].pos.x - boids[i].pos.x, boids[j].pos.y - boids[i].pos.y);
-                    if (distance < alignmentRad) {
-                        totalAngle += boids[j].angleRad;
-                        numBoids += 1;
-                    }
-                }
-            }
-            if (numBoids > 0) {
-                let avgAngle = totalAngle / numBoids;
-                boids[i].vel.x += alignmentCoef * Math.cos(avgAngle);
-                boids[i].vel.y += alignmentCoef * Math.sin(avgAngle);
+        let totalAngle = 0;
+        let numBoids = 0;
+        for (let otherBoid of boids) {
+            if (otherBoid === this) continue;
+            let distance = this.getDist(otherBoid.pos.x - this.pos.x, otherBoid.pos.y - this.pos.y);
+            if (distance < alignmentRad) {
+                totalAngle += otherBoid.angleRad;
+                numBoids += 1;
             }
         }
-    }
-
-    sneaky(boids) {
-        for (let i = 0; i < boids.length; i++) {
-            if (boids[i].pos.x > 600) {
-                boids[i].pos.x = 0;
-            }
-            if (boids[i].pos.y > 600) {
-                boids[i].pos.y = 0;
-            }
-            if (boids[i].pos.x < 0) {
-                boids[i].pos.x = 600;
-            }
-            if (boids[i].pos.y < 0) {
-                boids[i].pos.y = 600;
-            }
+        if (numBoids > 0) {
+            let avgAngle = totalAngle / numBoids;
+            this.vel.x += alignmentCoef * Math.cos(avgAngle);
+            this.vel.y += alignmentCoef * Math.sin(avgAngle);
         }
     }
 
     cohesion(boids) {
-        for (let i = 0; i < boids.length; i++) {
-            let total = {
-                x: 0,
-                y: 0
-            };
-            let numBoids = 0;
-            for (let j = 0; j < boids.length; j++) {
-                if (boids[i] === boids[j]) {
-                    continue;
+        let centerX = 0;
+        let centerY = 0;
+        let numBoids = 0;
+        for (let otherBoid of boids) {
+            if (otherBoid === this) continue;
+                let distance = this.getDist(otherBoid.pos.x - this.pos.x, otherBoid.pos.y - this.pos.y);
+                if (distance < cohesionRad) {
+                    centerX += otherBoid.pos.x;
+                    centerY += otherBoid.pos.y;
+                    numBoids += 1;
                 }
-                else {
-                    let distance = this.getDist(boids[j].pos.x - boids[i].pos.x, boids[j].pos.y - boids[i].pos.y);
-                    if (distance < cohesionRad) {
-                        total.x += boids[j].pos.x;
-                        total.y += boids[j].pos.y;
-                        numBoids += 1;
-                    }
-                }
-            }
-            if (numBoids > 0) {
-                let avg = {
-                    x: total.x / numBoids,
-                    y: total.y / numBoids
-                };
-                boids[i].vel.x += cohesionCoef * (avg.x - boids[i].pos.x);
-                boids[i].vel.y += cohesionCoef * (avg.y - boids[i].pos.y);
-            }
+        }
+        if (numBoids) {
+            centerX = centerX / numBoids;
+            centerY = centerY / numBoids;
+            this.vel.x += (centerX - this.pos.x) * cohesionCoef;
+            this.vel.y += (centerY - this.pos.y) * cohesionCoef;
+        }
+    }
+
+    sneaky(width, height) {
+        if (this.pos.x > width) {
+            this.pos.x = 0;
+        }
+        if (this.pos.y > height) {
+               this.pos.y = 0;
+        }
+        if (this.pos.x < 0) {
+            this.pos.x = width;
+        }
+        if (this.pos.y < 0) {
+            this.pos.y = height;
+        }
+    }
+
+    keepInBounds(width, height) {
+        let margin = 50;
+        let maxTurn = 20;
+        
+        let distFromLeft = this.pos.x;
+        if (distFromLeft < margin) {
+            let factor = (margin - distFromLeft) / margin * maxTurn;
+            this.vel.x += factor;
+        }
+        let distFromRight = width - this.pos.x;
+        if (distFromRight < margin) {
+            let factor = (margin - distFromRight) / margin * maxTurn;
+            this.vel.x -= factor;
+        }
+        let distFromTop = this.pos.y;
+        if (distFromTop < margin) {
+            let factor = (margin - distFromTop) / margin * maxTurn;
+            this.vel.y += factor;
+        }
+        let distFromBottom = height - this.pos.y;
+        if (distFromBottom < margin) {
+            let factor = (margin - distFromBottom) / margin * maxTurn;
+            this.vel.y -= factor;
+        }
+
+        // If the boid has crossed the canvas edges
+        let damping = 1; // Damping factor for the bounce
+        if (this.pos.x < 0) {
+            this.pos.x = 0;
+            this.vel.x = Math.abs(this.vel.x) * damping;
+        }
+        if (this.pos.x > width) {
+            this.pos.x = width;
+            this.vel.x = - Math.abs(this.vel.x) * damping;
+        }
+        if (this.pos.y < 0) {
+            this.pos.y = 0;
+            this.vel.y = Math.abs(this.vel.y) * damping;
+        }
+        if (this.pos.y > height) {
+            this.pos.y = height;
+            this.vel.y = - Math.abs(this.vel.y) * damping;
         }
     }
 }
