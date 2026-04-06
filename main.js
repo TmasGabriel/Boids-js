@@ -23,6 +23,8 @@ function animate() {
     clearCanvas(ctx, canvas);
     boids.forEach((boid, index) => {
         boid.separation(boids);
+        boid.alignment(boids);
+        boid.sneaky(boids);
         boid.update();
         drawBoid(ctx, boid);
         drawDir(ctx, boid);
