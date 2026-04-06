@@ -9,6 +9,7 @@ let alignmentRad = 160;
 
 let wallMargin = 50;
 let bounceCoef = .5;
+let bounceCoefGradual = .01;
 
 export class Boid {
     constructor(inputx, inputy) {
@@ -159,6 +160,8 @@ export class Boid {
         }
     }
 
+    // When boids get close to the wall velocity will be added in the opposite direction.
+    // Margin wall = Imagine a invisible border 50px inside the canvas
     BounceOffWall(width, height) {
         if (this.pos.x >= width - wallMargin) {
             this.vel.x -= bounceCoef;
@@ -171,6 +174,27 @@ export class Boid {
         }
         else if (this.pos.y <= 0 + wallMargin) {
             this.vel.y += bounceCoef;
+        }
+    }
+
+    // As boids approach the wall more velocity will be added in the opposite direction the closer they get.
+    BounceOffWallGradually(width, height) {
+        let rightWall = width - wallMargin;
+        let leftTopWall = 0 + wallMargin;
+        let bottomWall = height - wallMargin;
+
+        if (this.pos.x >= rightWall) {
+            this.vel.x -= (this.pos.x - rightWall) * bounceCoefGradual;
+            //                ^^^^^^^^^^^^^^^ distance from the margin wall
+        }
+        else if (this.pos.x <= leftTopWall) {
+            this.vel.x += (leftTopWall - this.pos.x) * bounceCoefGradual;
+        }
+        if (this.pos.y >= bottomWall) {
+            this.vel.y -= (this.pos.y - bottomWall) * bounceCoefGradual;
+        }
+        else if (this.pos.y <= leftTopWall) {
+            this.vel.y += (leftTopWall - this.pos.y) * bounceCoefGradual;
         }
     }
 

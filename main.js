@@ -20,7 +20,7 @@ function animate() {
         boid.cohesion(boids);
         //boid.sneaky(canvas.width, canvas.height);
         boid.update();
-        boid.BounceOffWall(canvas.width, canvas.height);
+        boid.BounceOffWallGradually(canvas.width, canvas.height);
         drawBoid(ctx, boid);
         drawDir(ctx, boid);
     });
