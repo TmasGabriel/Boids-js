@@ -1,15 +1,20 @@
 // boids.js
 export class Boid {
-    constructor(x, y) {
+    constructor(inputx, inputy) {
         this.pos = {
-            x: x,
-            y: y
+            x: inputx,
+            y: inputy
         };
-        // Add properties like velocity, etc.
+        this.vel = {
+            x: -1,
+            y: .5
+        };
+        this.angleRad = Math.atan2(this.vel.x, this.vel.y);
     }
 
     update() {
-        this.pos.x++;
-        this.pos.y++;
+        this.pos.x += this.vel.x;
+        this.pos.y += this.vel.y;
+        console.log(this.angleRad);
     }
 }

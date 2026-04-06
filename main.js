@@ -1,6 +1,6 @@
 // main.js
 import { Boid } from './boids.js';
-import { drawBoid, clearCanvas } from './display.js';
+import { drawBoid, clearCanvas, drawDir } from './display.js';
 
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
@@ -19,12 +19,13 @@ console.log('Boids created:', boids.length);
 
 // Animation loop
 function animate() {
-    console.log('Animating frame');
+    //console.log('Animating frame');
     clearCanvas(ctx, canvas);
     boids.forEach((boid, index) => {
-        console.log(`Updating boid ${index}: x=${boid.pos.x}, y=${boid.pos.y}`);
+        //console.log(`Updating boid ${index}: x=${boid.pos.x}, y=${boid.pos.y}`);
         boid.update();
         drawBoid(ctx, boid);
+        drawDir(ctx, boid);
     });
     requestAnimationFrame(animate);
 }

@@ -11,3 +11,11 @@ export function clearCanvas(ctx, canvas) {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
+
+export function drawDir(ctx, boid) {
+    ctx.beginPath();
+    ctx.moveTo(boid.pos.x, boid.pos.y);
+    ctx.lineTo(boid.pos.x + (20 * Math.sin(boid.angleRad)), boid.pos.y + (20 * Math.cos(boid.angleRad)));
+    ctx.strokeStyle = "red";
+    ctx.stroke();
+}
