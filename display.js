@@ -15,7 +15,7 @@ export function clearCanvas(ctx, canvas) {
 export function drawDir(ctx, boid) {
     ctx.beginPath();
     ctx.moveTo(boid.pos.x, boid.pos.y);
-    ctx.lineTo(boid.pos.x + (40 * Math.sin(boid.angleRad)), boid.pos.y + (40 * Math.cos(boid.angleRad)));
+    ctx.lineTo(boid.pos.x + (40 * Math.cos(boid.angleRad)), boid.pos.y + (40 * Math.sin(boid.angleRad)));
     ctx.strokeStyle = "red";
     ctx.stroke();
 }

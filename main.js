@@ -5,25 +5,19 @@ import { drawBoid, clearCanvas, drawDir } from './display.js';
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
-console.log('Canvas found:', canvas);
-console.log('Canvas width:', canvas.width, 'height:', canvas.height);
-console.log('Context:', ctx);
-
 // Create boids
 let boids = [];
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 30; i++) {
     boids.push(new Boid(Math.random() * canvas.width, Math.random() * canvas.height));
 }
 
-console.log('Boids created:', boids.length);
-
 // Animation loop
 function animate() {
-    //console.log('Animating frame');
     clearCanvas(ctx, canvas);
     boids.forEach((boid, index) => {
         boid.separation(boids);
         boid.alignment(boids);
+        boid.cohesion(ctx, boids);
         boid.sneaky(boids);
         boid.update();
         drawBoid(ctx, boid);
