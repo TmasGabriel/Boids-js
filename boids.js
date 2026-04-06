@@ -101,8 +101,10 @@ export class Boid {
 
     cohesion(boids) {
         for (let i = 0; i < boids.length; i++) {
-            let totalx = 0;
-            let totaly = 0;
+            let total = {
+                x: 0,
+                y: 0
+            };
             let numBoids = 0;
             for (let j = 0; j < boids.length; j++) {
                 if (boids[i] === boids[j]) {
@@ -111,17 +113,19 @@ export class Boid {
                 else {
                     let distance = this.getDist(boids[j].pos.x - boids[i].pos.x, boids[j].pos.y - boids[i].pos.y);
                     if (distance < cohesionRad) {
-                        totalx += boids[j].pos.x;
-                        totaly += boids[j].pos.y;
+                        total.x += boids[j].pos.x;
+                        total.y += boids[j].pos.y;
                         numBoids += 1;
                     }
                 }
             }
             if (numBoids > 0) {
-                let avgx = totalx / numBoids;
-                let avgy = totaly / numBoids;
-                boids[i].vel.x += cohesionCoef * (avgx - boids[i].pos.x);
-                boids[i].vel.y += cohesionCoef * (avgy - boids[i].pos.y);
+                let avg = {
+                    x: total.x / numBoids,
+                    y: total.y / numBoids
+                };
+                boids[i].vel.x += cohesionCoef * (avg.x - boids[i].pos.x);
+                boids[i].vel.y += cohesionCoef * (avg.y - boids[i].pos.y);
             }
         }
     }
