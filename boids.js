@@ -6,8 +6,8 @@ export class Boid {
             y: inputy
         };
         this.vel = {
-            x: -1,
-            y: .5
+            x: Math.random() * (2 + 2) - 2,
+            y: Math.random() * (2 + 2) - 2
         };
         this.angleRad = Math.atan2(this.vel.x, this.vel.y);
     }
