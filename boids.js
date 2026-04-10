@@ -4,8 +4,8 @@ let alignmentCoef = .02;
 let cohesionCoef = .005;
 
 let seperationRad = 40;
-let cohesionRad = 100;
-let alignmentRad = 160;
+let cohesionRad = 80;
+let alignmentRad = 130;
 
 let wallMargin = 50;
 let bounceCoef = .5;
@@ -100,7 +100,7 @@ export class Boid {
         }
     }
 
-    sneaky(width, height) {
+    InfWalls(width, height) {
         if (this.pos.x > width) {
             this.pos.x = 0;
         }
@@ -112,51 +112,6 @@ export class Boid {
         }
         if (this.pos.y < 0) {
             this.pos.y = height;
-        }
-    }
-
-    keepInBounds(width, height) {
-        let margin = 50;
-        let maxTurn = 20;
-        
-        let distFromLeft = this.pos.x;
-        if (distFromLeft < margin) {
-            let factor = (margin - distFromLeft) / margin * maxTurn;
-            this.vel.x += factor;
-        }
-        let distFromRight = width - this.pos.x;
-        if (distFromRight < margin) {
-            let factor = (margin - distFromRight) / margin * maxTurn;
-            this.vel.x -= factor;
-        }
-        let distFromTop = this.pos.y;
-        if (distFromTop < margin) {
-            let factor = (margin - distFromTop) / margin * maxTurn;
-            this.vel.y += factor;
-        }
-        let distFromBottom = height - this.pos.y;
-        if (distFromBottom < margin) {
-            let factor = (margin - distFromBottom) / margin * maxTurn;
-            this.vel.y -= factor;
-        }
-
-        // If the boid has crossed the canvas edges
-        let damping = 1; // Damping factor for the bounce
-        if (this.pos.x < 0) {
-            this.pos.x = 0;
-            this.vel.x = Math.abs(this.vel.x) * damping;
-        }
-        if (this.pos.x > width) {
-            this.pos.x = width;
-            this.vel.x = - Math.abs(this.vel.x) * damping;
-        }
-        if (this.pos.y < 0) {
-            this.pos.y = 0;
-            this.vel.y = Math.abs(this.vel.y) * damping;
-        }
-        if (this.pos.y > height) {
-            this.pos.y = height;
-            this.vel.y = - Math.abs(this.vel.y) * damping;
         }
     }
 
