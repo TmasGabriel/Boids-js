@@ -1,6 +1,6 @@
 // main.js
 import { Boid } from './boids.js';
-import { drawBoid, clearCanvas, drawDir } from './display.js';
+import { drawBoid, drawBoidFunny, clearCanvas, drawDir } from './display.js';
 
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
@@ -38,7 +38,7 @@ function frameTracking() {
 
 // Create boids
 let boids = [];
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 75; i++) {
     boids.push(new Boid(Math.random() * canvas.width, Math.random() * canvas.height));
 }
 
@@ -62,7 +62,7 @@ function animate() {
 
         // Draw boids
         drawBoid(ctx, boid);
-        drawDir(ctx, boid);
+        //drawDir(ctx, boid);
     });
     requestAnimationFrame(animate);
 }

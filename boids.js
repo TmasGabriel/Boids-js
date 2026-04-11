@@ -7,9 +7,9 @@ let seperationRad = 40;
 let cohesionRad = 80;
 let alignmentRad = 130;
 
-let wallMargin = 50;
+let wallMargin = 100;
 let bounceCoef = .5;
-let bounceCoefGradual = .01;
+let bounceCoefGradual = .005;
 
 export class Boid {
     constructor(inputx, inputy) {
@@ -22,7 +22,7 @@ export class Boid {
             y: Math.random() * (2 + 2) - 2
         };
         this.angleRad = Math.atan2(this.vel.y, this.vel.x);
-        this.maxSpeed = 5;
+        this.maxSpeed = 6;
     }
 
     getDist(x, y) {
