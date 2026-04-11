@@ -30,17 +30,18 @@ export class Boid {
     }
 
     update() {
-        if (this.getDist(this.vel.x, this.vel.y) >= this.maxSpeed) {
-            this.vel.x = this.maxSpeed * Math.cos(this.angleRad);
-            this.vel.y = this.maxSpeed * Math.sin(this.angleRad);
+        // Speed limit calculations
+        let speed = this.getDist(this.vel.x, this.vel.y);
+
+        if (speed > this.maxSpeed) {
+            this.vel.x = (this.vel.x / speed) * this.maxSpeed;
+            this.vel.y = (this.vel.y / speed) * this.maxSpeed;
         }
-        else if (this.getDist(this.vel.x, this.vel.y) <= -this.maxSpeed) {
-            this.vel.x = -this.maxSpeed * Math.cos(this.angleRad);
-            this.vel.y = -this.maxSpeed * Math.sin(this.angleRad);
-        }
+
+        // Update velocity
         this.pos.x += this.vel.x;
         this.pos.y += this.vel.y;
-        this.angleRad = Math.atan2(this.vel.y, this.vel.x);
+        this.angleRad = Math.atan2(this.vel.y, this.vel.x); // Update angle
     }
 
     separation(boids) {
@@ -135,21 +136,22 @@ export class Boid {
     // As boids approach the wall more velocity will be added in the opposite direction the closer they get.
     BounceOffWallGradually(width, height) {
         let rightWall = width - wallMargin;
-        let leftTopWall = 0 + wallMargin;
+        let leftWall = 0 + wallMargin;
+        let topWall = 0 + wallMargin;
         let bottomWall = height - wallMargin;
 
         if (this.pos.x >= rightWall) {
             this.vel.x -= (this.pos.x - rightWall) * bounceCoefGradual;
             //                ^^^^^^^^^^^^^^^ distance from the margin wall
         }
-        else if (this.pos.x <= leftTopWall) {
-            this.vel.x += (leftTopWall - this.pos.x) * bounceCoefGradual;
+        else if (this.pos.x <= leftWall) {
+            this.vel.x += (leftWall - this.pos.x) * bounceCoefGradual;
         }
         if (this.pos.y >= bottomWall) {
             this.vel.y -= (this.pos.y - bottomWall) * bounceCoefGradual;
         }
-        else if (this.pos.y <= leftTopWall) {
-            this.vel.y += (leftTopWall - this.pos.y) * bounceCoefGradual;
+        else if (this.pos.y <= topWall) {
+            this.vel.y += (topWall - this.pos.y) * bounceCoefGradual;
         }
     }
 
