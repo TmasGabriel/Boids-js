@@ -22,7 +22,7 @@ export class Boid {
             y: Math.random() * (2 + 2) - 2
         };
         this.angleRad = Math.atan2(this.vel.y, this.vel.x);
-        this.maxSpeed = 6;
+        this.maxSpeed = 7;
     }
 
     getDist(x, y) {

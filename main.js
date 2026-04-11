@@ -1,6 +1,6 @@
 // main.js
 import { Boid } from './boids.js';
-import { drawBoid, drawBoidFunny, clearCanvas, drawDir } from './display.js';
+import { drawBoid, clearCanvas, drawDir } from './display.js';
 
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
